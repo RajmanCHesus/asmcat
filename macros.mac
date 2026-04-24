@@ -1,0 +1,29 @@
+; macros.mac - SPaASM Task 6 macro definitions
+; Usage: %include "macros.mac" in every source file that needs these.
+
+; sys_write fd, buf, len
+; NOTE: rsi set before rdi — prevents clobbering when caller passes rdi as buf
+%macro sys_write 3
+    mov     rax, 1
+    mov     rsi, %2
+    mov     rdi, %1
+    mov     rdx, %3
+    syscall
+%endmacro
+
+; sys_exit code
+%macro sys_exit 1
+    mov     rax, 60
+    mov     rdi, %1
+    syscall
+%endmacro
+
+; print_str buf, len  — stdout
+%macro print_str 2
+    sys_write 1, %1, %2
+%endmacro
+
+; print_err buf, len  — stderr
+%macro print_err 2
+    sys_write 2, %1, %2
+%endmacro
