@@ -12,32 +12,45 @@ A command-line utility that reads one or more files and prints their contents to
 - **Clean error handling**: Informative error messages for missing or inaccessible files
 
 ## Usage
+    make 
 
+    ./asmcat [-h] <file1> [file2] ...
 
-./numblines [-h] <file1> [file2] ...
+# Examples
 
-*Examples
+## Display a single file with line numbers
+    ./asmcat myfile.txt
 
-# Display a single file with line numbers
-./numblines myfile.txt
+## Display multiple files (line numbering continues across files)
+    ./asmcat file1.txt file2.txt file3.txt
 
-# Display multiple files (line numbering continues across files)
-./numblines file1.txt file2.txt file3.txt
+## Show help message
+    ./asmcat -h
 
-# Show help message
-./numblines -h
-
-*Requirements
+# Requirements
 
     NASM (Netwide Assembler) — for assembly compilation
     ld (GNU linker) — for linking object files
     Linux x86-64 environment
 
-*Project Structure
-asmcat/
-├── main.asm          # Main program entry point, argument parsing, file opening
-├── proc.asm          # External procedure: file reading and output
-├── macros.mac        # Reusable assembly macros (print\_str, sys\_exit, etc.)
-├── Makefile          # Build configuration
-├── .gitignore        # Git ignore rules
-└── README.md         # This file
+# Project Structure
+    asmcat/
+    ├── main.asm          # Main program entry point, argument parsing, file opening
+    ├── proc.asm          # External procedure: file reading and output
+    ├── macros.mac        # Reusable assembly macros (print\_str, sys\_exit, etc.)
+    ├── Makefile          # Build configuration
+    └── README.md         # This file
+
+# Architecture
+**main.asm**
+- Entry point: _start
+- Handles: Command-line argument parsing, file opening, TTY detection
+- ANSI codes: Clears screen and homes cursor when stdout is a TTY
+- Syscalls: sys_open, sys_close, sys_ioctl, sys_exit
+
+**proc.asm**
+- External procedure: process_file(fd, line_count*)
+- Buffer: 64 KB read buffer for handling large files
+- Line tracking: Maintains shared line counter across all input files
+- String ops: Uses SCASB to scan for newlines, STOSB for decimal conversion
+- Syscalls: sys_read, sys_write
