@@ -13,7 +13,7 @@ A command-line utility that reads one or more files and prints their contents to
 
 ## Usage
 
-```bash
+
 ./numblines [-h] <file1> [file2] ...
 
 *Examples
